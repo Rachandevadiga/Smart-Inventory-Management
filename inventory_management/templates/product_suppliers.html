@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block title %}Suppliers for {{ product.name }}{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2><i class="bi bi-box-seam"></i> {{ product.name }}</h2>
+            <p class="text-muted mb-0">
+                SKU: {{ product.SKU }} | Category: {{ product.category }} | 
+                Retail Price: ₹{{ "%.2f"|format(product.price) }} | 
+                Stock: 
+                {% if product.stock_level <= product.reorder_level %}
+                    <span class="badge bg-danger">{{ product.stock_level }} ⚠️</span>
+                {% else %}
+                    <span class="badge bg-success">{{ product.stock_level }}</span>
+                {% endif %}
+            </p>
+        </div>
+        <a href="{{ url_for('products') }}" class="btn btn-secondary">
+            <i class="bi bi-arrow-left"></i> Back to Products
+        </a>
+    </div>
+
+    {% if suppliers %}
+    <!-- Supplier Comparison Table -->
+    <div class="card">
+        <div class="card-header bg-light">
+            <h5 class="mb-0">Available Suppliers ({{ suppliers|length }})</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Supplier</th>
+                            <th>Contact</th>
+                            <th>Supply Price</th>
+                            <th>Profit Margin</th>
+                            <th>Min Order</th>
+                            <th>Lead Time</th>
+                            <th>Last Supply</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for supplier in suppliers %}
+                        <tr {% if supplier.is_preferred %}class="table-success"{% endif %}>
+                            <td>
+                                <strong>{{ supplier.supplier_name }}</strong>
+                                {% if supplier.is_preferred %}
+                                    <span class="badge bg-primary ms-2">⭐ Preferred</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <small>
+                                    <i class="bi bi-telephone"></i> {{ supplier.contact_info }}<br>
+                                    <i class="bi bi-envelope"></i> {{ supplier.email }}
+                                </small>
+                            </td>
+                            <td>
+                                <strong class="text-primary">₹{{ "%.2f"|format(supplier.supply_price) }}</strong>
+                            </td>
+                            <td>
+                                <span class="badge bg-success">
+                                    +₹{{ "%.2f"|format(product.price - supplier.supply_price) }}
+                                </span>
+                            </td>
+                            <td>{{ supplier.minimum_order_quantity }} units</td>
+                            <td>
+                                {% if supplier.lead_time_days <= 3 %}
+                                    <span class="badge bg-success">{{ supplier.lead_time_days }} days</span>
+                                {% elif supplier.lead_time_days <= 7 %}
+                                    <span class="badge bg-warning">{{ supplier.lead_time_days }} days</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">{{ supplier.lead_time_days }} days</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if supplier.last_supply_date %}
+                                    {{ supplier.last_supply_date }}
+                                {% else %}
+                                    <span class="text-muted">Never</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if supplier.is_preferred %}
+                                    <span class="badge bg-success">Best Choice</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Alternative</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{{ url_for('supplier_products', supplier_id=supplier.supplier_id) }}" 
+                                   class="btn btn-sm btn-info" 
+                                   title="View Supplier">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Best Supplier Recommendation -->
+    <div class="row mt-4">
+        <div class="col-md-6">
+            <div class="card border-success">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0"><i class="bi bi-award"></i> Best Price</h5>
+                </div>
+                <div class="card-body">
+                    {% set best_price = suppliers|sort(attribute='supply_price')|first %}
+                    <h4>{{ best_price.supplier_name }}</h4>
+                    <p class="mb-1"><strong>Supply Price:</strong> ₹{{ "%.2f"|format(best_price.supply_price) }}</p>
+                    <p class="mb-1"><strong>Lead Time:</strong> {{ best_price.lead_time_days }} days</p>
+                    <p class="mb-0"><strong>Min Order:</strong> {{ best_price.minimum_order_quantity }} units</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="card border-primary">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="bi bi-lightning-fill"></i> Fastest Delivery</h5>
+                </div>
+                <div class="card-body">
+                    {% set fastest = suppliers|sort(attribute='lead_time_days')|first %}
+                    <h4>{{ fastest.supplier_name }}</h4>
+                    <p class="mb-1"><strong>Lead Time:</strong> {{ fastest.lead_time_days }} days</p>
+                    <p class="mb-1"><strong>Supply Price:</strong> ₹{{ "%.2f"|format(fastest.supply_price) }}</p>
+                    <p class="mb-0"><strong>Min Order:</strong> {{ fastest.minimum_order_quantity }} units</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-warning text-center">
+        <i class="bi bi-exclamation-triangle"></i> 
+        <strong>No suppliers found for this product!</strong><br>
+        <a href="{{ url_for('suppliers') }}" class="btn btn-primary mt-2">
+            Add Supplier
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

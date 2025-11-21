@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4"><i class="fas fa-shopping-cart"></i> Create New Sale</h2>
+
+<div class="card">
+    <div class="card-body">
+        <form method="POST" id="saleForm">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Customer (Optional)</label>
+                        <select class="form-select" name="customer_id">
+                            <option value="">Walk-in Customer</option>
+                            {% for customer in customers %}
+                            <option value="{{ customer.customer_id }}">{{ customer.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label">Employee *</label>
+                        <select class="form-select" name="employee_id" required>
+                            {% for employee in employees %}
+                            <option value="{{ employee.employee_id }}">{{ employee.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <h5 class="mt-4 mb-3">Products</h5>
+            <div id="productLines">
+                <div class="row mb-2 product-line">
+                    <div class="col-md-6">
+                        <select class="form-select" name="product_id[]" required>
+                            <option value="">Select Product</option>
+                            {% for product in products %}
+                            <option value="{{ product.product_id }}" data-price="{{ product.price }}">
+                                {{ product.name }} (₹{{ product.price }}) - Stock: {{ product.stock_level }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <input type="number" class="form-control" name="quantity[]" placeholder="Quantity" min="1" required>
+                    </div>
+                    <div class="col-md-3">
+                        <button type="button" class="btn btn-danger" onclick="removeProduct(this)">Remove</button>
+                    </div>
+                </div>
+            </div>
+
+            <button type="button" class="btn btn-secondary mb-3" onclick="addProduct()">
+                <i class="fas fa-plus"></i> Add Another Product
+            </button>
+
+            <hr>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Create Sale</button>
+                <a href="/sales" class="btn btn-secondary"><i class="fas fa-times"></i> Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function addProduct() {
+    const template = document.querySelector('.product-line').cloneNode(true);
+    template.querySelectorAll('select, input').forEach(el => el.value = '');
+    document.getElementById('productLines').appendChild(template);
+}
+
+function removeProduct(btn) {
+    if (document.querySelectorAll('.product-line').length > 1) {
+        btn.closest('.product-line').remove();
+    }
+}
+</script>
+{% endblock %}

@@ -1,0 +1,11 @@
+## 🚀 Installation Steps
+
+### 1. Install Python Dependencies
+
+Create `requirements.txt`:
+```
+Flask==3.0.0
+mysql-connector-python==8.2.0
+```
+
+

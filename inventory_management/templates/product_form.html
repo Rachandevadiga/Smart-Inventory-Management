@@ -1,0 +1,93 @@
+<!-- ========================================
+          FILE: templates/product_form.html
+          ======================================== -->
+          {% extends "base.html" %}
+     
+          {% block content %}
+          <h2 class="mb-4">
+              <i class="fas fa-box"></i> 
+              {% if product %}Edit{% else %}Add{% endif %} Product
+          </h2>
+          
+          <div class="card">
+              <div class="card-body">
+                  <form method="POST">
+                      <div class="row">
+                          <div class="col-md-6">
+                              <div class="mb-3">
+                                  <label for="name" class="form-label">Product Name *</label>
+                                  <input type="text" class="form-control" id="name" name="name" 
+                                         value="{{ product.name if product else '' }}" required>
+                              </div>
+                          </div>
+                          <div class="col-md-6">
+                              <div class="mb-3">
+                                  <label for="sku" class="form-label">SKU *</label>
+                                  <input type="text" class="form-control" id="sku" name="sku" 
+                                         value="{{ product.SKU if product else '' }}" required>
+                              </div>
+                          </div>
+                      </div>
+                      
+                      <div class="row">
+                          <div class="col-md-6">
+                              <div class="mb-3">
+                                  <label for="category" class="form-label">Category</label>
+                                  <select class="form-select" id="category" name="category">
+                                      <option value="Electronics" {% if product and product.category == 'Electronics' %}selected{% endif %}>Electronics</option>
+                                      <option value="Accessories" {% if product and product.category == 'Accessories' %}selected{% endif %}>Accessories</option>
+                                      <option value="Furniture" {% if product and product.category == 'Furniture' %}selected{% endif %}>Furniture</option>
+                                      <option value="Clothing" {% if product and product.category == 'Clothing' %}selected{% endif %}>Clothing</option>
+                                  </select>
+                              </div>
+                          </div>
+                          <div class="col-md-6">
+                              <div class="mb-3">
+                                  <label for="price" class="form-label">Price *</label>
+                                  <input type="number" step="0.01" class="form-control" id="price" name="price" 
+                                         value="{{ product.price if product else '' }}" required>
+                              </div>
+                          </div>
+                      </div>
+                      
+                      <div class="row">
+                          <div class="col-md-4">
+                              <div class="mb-3">
+                                  <label for="tax_rate" class="form-label">Tax Rate (%)</label>
+                                  <input type="number" step="0.01" class="form-control" id="tax_rate" name="tax_rate" 
+                                         value="{{ product.tax_rate if product else '18.00' }}">
+                              </div>
+                          </div>
+                          <div class="col-md-4">
+                              <div class="mb-3">
+                                  <label for="stock_level" class="form-label">Stock Level *</label>
+                                  <input type="number" class="form-control" id="stock_level" name="stock_level" 
+                                         value="{{ product.stock_level if product else '' }}" required>
+                              </div>
+                          </div>
+                          <div class="col-md-4">
+                              <div class="mb-3">
+                                  <label for="reorder_level" class="form-label">Reorder Level</label>
+                                  <input type="number" class="form-control" id="reorder_level" name="reorder_level" 
+                                         value="{{ product.reorder_level if product else '10' }}">
+                              </div>
+                          </div>
+                      </div>
+                      
+                      <div class="mb-3">
+                          <label for="description" class="form-label">Description</label>
+                          <textarea class="form-control" id="description" name="description" rows="3">{{ product.description if product else '' }}</textarea>
+                      </div>
+                      
+                      <div class="d-flex gap-2">
+                          <button type="submit" class="btn btn-primary">
+                              <i class="fas fa-save"></i> Save
+                          </button>
+                          <a href="/products" class="btn btn-secondary">
+                              <i class="fas fa-times"></i> Cancel
+                          </a>
+                      </div>
+                  </form>
+              </div>
+          </div>
+          {% endblock %}

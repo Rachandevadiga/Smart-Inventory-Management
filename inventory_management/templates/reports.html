@@ -1,0 +1,43 @@
+<!-- ========================================
+          FILE: templates/reports.html
+          ======================================== -->
+          {% extends "base.html" %}
+     
+          {% block content %}
+          <h2 class="mb-4"><i class="fas fa-chart-bar"></i> Reports</h2>
+          
+          <div class="row">
+              <div class="col-md-4">
+                  <div class="card text-center">
+                      <div class="card-body">
+                          <i class="fas fa-chart-line fa-3x text-primary mb-3"></i>
+                          <h5 class="card-title">Sales Summary</h5>
+                          <p class="card-text">View monthly and daily sales reports</p>
+                          <a href="/reports/sales_summary" class="btn btn-primary">View Report</a>
+                      </div>
+                  </div>
+              </div>
+              
+              <div class="col-md-4">
+                  <div class="card text-center">
+                      <div class="card-body">
+                          <i class="fas fa-trophy fa-3x text-success mb-3"></i>
+                          <h5 class="card-title">Top Products</h5>
+                          <p class="card-text">Best selling products and categories</p>
+                          <a href="/reports/top_products" class="btn btn-success">View Report</a>
+                      </div>
+                  </div>
+              </div>
+              
+              <div class="col-md-4">
+                  <div class="card text-center">
+                      <div class="card-body">
+                          <i class="fas fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                          <h5 class="card-title">Low Stock Alert</h5>
+                          <p class="card-text">Products that need reordering</p>
+                          <a href="/dashboard" class="btn btn-warning">View Alert</a>
+                      </div>
+                  </div>
+              </div>
+          </div>
+          {% endblock %}
